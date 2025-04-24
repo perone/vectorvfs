@@ -1,0 +1,7 @@
+[project]
+name = "vectorvfs"
+version = "0.1.0"
+description = "Your filesystem is a vector database."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []

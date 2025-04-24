@@ -1,0 +1,8 @@
+cff-version: "1.2.0"
+date-released: 2025-05
+message: "If you use this software, please cite it using these metadata."
+title: "vectorvfs: Your filesystem is a vector database"
+url: "https://github.com/perone/vectorvfs"
+authors: 
+  - family-names: Perone
+    given-names: Christian

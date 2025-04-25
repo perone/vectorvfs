@@ -15,9 +15,6 @@ class TestVFSStore(unittest.TestCase):
         pass
 
 
-if __name__ == "__main__":
-    unittest.main()
-    
 SKIP_XATTR = not all(hasattr(os, fn) for fn in (
     'listxattr', 'setxattr', 'getxattr', 'removexattr'
 ))
@@ -73,3 +70,7 @@ class TestXAttrFile(unittest.TestCase):
     def test_remove_nonexistent(self):
         with self.assertRaises(OSError):
             self.xfile.remove('user.nothing')
+
+
+if __name__ == "__main__":
+    unittest.main()

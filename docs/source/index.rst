@@ -17,6 +17,11 @@ leveraging the native VFS (Virtual File System) extended attributes. Rather than
 index or external database, VectorVFS stores vector embeddings directly alongside each file—turning your
 existing directory structure into an efficient and semantically searchable embedding store.
 
+VectorVFS supports Meta's Perception Encoders (PE) `[arxiv] <https://arxiv.org/abs/2504.13181>`_ which
+includes image/video encoders for vision language understanding, it outperforms InternVL3, Qwen2.5VL
+and SigLIP2 for zero-shot image tasks.
+
+
 Key Features
 ------------
 - **Zero-overhead indexing**  

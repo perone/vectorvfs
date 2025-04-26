@@ -1,9 +1,9 @@
+import os
+import tempfile
 import unittest
 from pathlib import Path
 
 from vectorvfs.vfsstore import VFSStore, XAttrFile
-import os
-import tempfile
 
 
 class TestVFSStore(unittest.TestCase):

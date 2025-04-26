@@ -1,5 +1,8 @@
+import io
 import os
 from pathlib import Path
+
+import torch
 
 
 class XAttrFile:
@@ -42,8 +45,24 @@ class XAttrFile:
 
 
 class VFSStore:
-    def __init__(self, root_path: Path) -> None:
-        self.root_path = root_path
+    def __init__(self, xattrfile: XAttrFile) -> None:
+        self.xattrfile = xattrfile
 
-    def search_text(self, text: str) -> None:
-        pass
+    def _tensor_to_bytes(self, tensor: torch.Tensor) -> bytes:
+        buffer = io.BytesIO()
+        torch.save(tensor, buffer)
+        return buffer.getvalue()
+    
+    def _bytes_to_tensor(self, b: bytes, map_location=None) -> torch.Tensor:
+        buffer = io.BytesIO(b)
+        return torch.load(buffer, map_location=map_location, weights_only=True)
+
+    def write_tensor(self, tensor: torch.Tensor) -> int:
+        btensor = self._tensor_to_bytes(tensor)
+        self.xattrfile.write("user.vectorvfs", btensor)
+        return len(btensor)
+
+    def read_tensor(self) -> torch.Tensor:
+        btensor = self.xattrfile.read("user.vectorvfs")
+        tensor = self._bytes_to_tensor(btensor)
+        return tensor

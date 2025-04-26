@@ -16,4 +16,4 @@ isort:
 	uv run ruff check --select I --fix
 
 sphinx-autobuild:
-	uv run sphinx-autobuild docs/source docs/build/html/
+	uv run sphinx-autobuild --host 0.0.0.0 docs/source docs/build/html/

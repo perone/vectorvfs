@@ -37,7 +37,9 @@ def vfs():
     type=click.Path(exists=True, file_okay=False, dir_okay=True, readable=True),
     metavar='PATH')
 @click.option('--force-reindex', '-f', is_flag=True, default=False, help="Forces reindexing.")
-def search(n: int, query: str, path: str, force_reindex: bool) -> None:
+@click.option('--recursive', '-r', is_flag=True, default=False, help="Recursive search.")
+def search(n: int, query: str, path: str, force_reindex: bool,
+           recursive: bool) -> None:
     """Search files by similarity."""
     with console.status("", speed=1, spinner="bouncingBall") as status:
         status.update("Loading Perception Encoder model...")
@@ -58,7 +60,13 @@ def search(n: int, query: str, path: str, force_reindex: bool) -> None:
         status.update("Processing files...")
 
         similarity_heap = []
-        for pathfile in Path(path).iterdir():
+
+        if recursive:
+            iter_dir = Path(path).rglob("*")
+        else:
+            iter_dir = Path(path).iterdir()
+
+        for pathfile in iter_dir:
             if not pathfile.is_file():
                 continue
 

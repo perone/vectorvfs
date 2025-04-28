@@ -41,6 +41,7 @@ Key Features
    :caption: Contents
 
    installation
+   architecture
 
 Indices and tables
 ==================

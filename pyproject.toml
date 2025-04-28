@@ -1,12 +1,12 @@
 [project]
 name = "vectorvfs"
-version = "0.1.0"
+version = "0.2.0"
 description = "Your filesystem is a vector database."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "click>=8.1.8",
-    "perception-models",
+    "perception-models @ git+https://github.com/perone/perception_models.git@0389ab6823906760e3922a344dd2297c4e26ca94#egg=perception-models",
     "pillow>=11.0.0",
     "rich>=14.0.0",
     "torch==2.5.1",
@@ -27,8 +27,8 @@ dev = [
     "sphinx-press-theme>=0.9.1",
 ]
 
-[tool.uv.sources]
-perception-models = { git = "https://github.com/perone/perception_models.git", rev = "0389ab6823906760e3922a344dd2297c4e26ca94" }
+#[tool.uv.sources]
+#perception-models = { git = "https://github.com/perone/perception_models.git", rev = "0389ab6823906760e3922a344dd2297c4e26ca94" }
 
 [tool.mypy]
 disable_error_code = ["import-untyped"]

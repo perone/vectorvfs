@@ -4,6 +4,8 @@
 
 # VectorVFS: Your Filesystem as a Vector Database
 
+Documentation is at [https://vectorvfs.readthedocs.io](https://vectorvfs.readthedocs.io/).
+
 VectorVFS is a lightweight Python package that transforms your Linux filesystem into a vector database by leveraging the native VFS (Virtual File System) extended attributes. Rather than maintaining a separate index or external database, VectorVFS stores vector embeddings directly alongside each file—turning your existing directory structure into an efficient and semantically searchable embedding store.
 
 VectorVFS currently uses Meta's Perception Encoders (PE) [[arxiv]](https://arxiv.org/abs/2504.13181) which

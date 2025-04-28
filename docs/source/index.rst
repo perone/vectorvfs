@@ -21,6 +21,9 @@ VectorVFS supports Meta's Perception Encoders (PE) `[arxiv] <https://arxiv.org/a
 includes image/video encoders for vision language understanding, it outperforms InternVL3, Qwen2.5VL
 and SigLIP2 for zero-shot image tasks.
 
+.. note:: This is the first release of VectorVFS and we are expanding models and data types.
+          Currently we support only Perception Encoders (PE) and images.
+
 
 Key Features
 ------------
@@ -42,6 +45,7 @@ Key Features
 
    installation
    architecture
+   usage
 
 Indices and tables
 ==================

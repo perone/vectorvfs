@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
+from heapq import heappush, heappushpop
 from pathlib import Path
 
 import click
 import torch
-from rich.console import Console
 import torch.nn.functional as F
-from heapq import heappush, heappushpop
+from rich.console import Console
+from PIL import Image
 
-
-from vectorvfs.utils import PerfCounter
+from vectorvfs.utils import PerfCounter, pillow_image_extensions
 from vectorvfs.vfsstore import VFSStore, XAttrFile
 
 console = Console()
@@ -46,7 +46,7 @@ def search(n: int, query: str, path: str, force_reindex: bool,
 
         with PerfCounter() as model_counter:
             from vectorvfs.encoders import PerceptionEncoder
-            pe_encoder = PerceptionEncoder("PE-Core-B16-224")
+            pe_encoder = PerceptionEncoder()
 
         console.log(f"Perception Encoder model [bold cyan]{pe_encoder.model_name}[/bold cyan] "
                     f"loaded in [bold cyan]{model_counter.elapsed:.2f}s[/bold cyan].")
@@ -59,18 +59,19 @@ def search(n: int, query: str, path: str, force_reindex: bool,
         console.log(f"Query encoded in [bold cyan]{query_counter.elapsed:.2f}s[/bold cyan].")
         status.update("Processing files...")
 
-        similarity_heap = []
+        similarity_heap: list[PathSimilarity] = []
 
         if recursive:
             iter_dir = Path(path).rglob("*")
         else:
             iter_dir = Path(path).iterdir()
 
+        supported_images = pillow_image_extensions()
         for pathfile in iter_dir:
             if not pathfile.is_file():
                 continue
 
-            if pathfile.suffix != ".jpg":
+            if pathfile.suffix not in supported_images:
                 continue
 
             console.log(f"Processing [bold blue]{pathfile}[/bold blue]")
@@ -79,7 +80,13 @@ def search(n: int, query: str, path: str, force_reindex: bool,
             keys = xattrfile.list()
             if "user.vectorvfs" not in keys or force_reindex:
                 console.log(f"[bold blue]{pathfile}[/bold blue] not indexed, indexing...")
-                features = pe_encoder.encode_vision(pathfile)
+                try:
+                    features = pe_encoder.encode_vision(pathfile)
+                except:
+                    console.log(f"Failed to index [bold blue]{pathfile}[/bold blue], "
+                                "skipping...")
+                    continue
+                
                 features = F.normalize(features)
                 features = features.to(torch.float16)
                 vfs_store.write_tensor(features)

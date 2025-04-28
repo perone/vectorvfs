@@ -1,4 +1,5 @@
 import time
+from PIL import Image
 from contextlib import ContextDecorator
 
 
@@ -28,3 +29,15 @@ class PerfCounter(ContextDecorator):
     def __exit__(self, exc_type, exc_value, traceback):
         end = time.perf_counter()
         self.elapsed = end - self.start
+
+
+def pillow_image_extensions():
+    Image.init()
+    return {
+        ext.lower()
+        for ext, fmt in Image.registered_extensions().items()
+        if (
+            fmt in Image.OPEN
+            and Image.MIME.get(fmt, "").startswith("image/")
+        )
+    }

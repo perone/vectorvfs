@@ -19,7 +19,9 @@ existing directory structure into an efficient and semantically searchable embed
 
 VectorVFS supports Meta's Perception Encoders (PE) `[arxiv] <https://arxiv.org/abs/2504.13181>`_ which
 includes image/video encoders for vision language understanding, it outperforms InternVL3, Qwen2.5VL
-and SigLIP2 for zero-shot image tasks.
+and SigLIP2 for zero-shot image tasks. We support both CPU and GPU but if you have a large
+collection of images it might take a while in the first time to embed all items if you are
+not using a GPU.
 
 .. note:: This is the first release of VectorVFS and we are expanding models and data types.
           Currently we support only Perception Encoders (PE) and images.

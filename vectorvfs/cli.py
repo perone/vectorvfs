@@ -103,7 +103,7 @@ def search(n: int, query: str, path: str, force_reindex: bool,
                 heappushpop(similarity_heap, path_similarity)
 
         similarity_heap = sorted(similarity_heap, reverse=True)
-        console.log(f"\nTop {n} files found:")
+        console.log(f"\nTop {len(similarity_heap)} files found:")
         for item in similarity_heap[:n]:
             console.log(f"[bold blue]{item.path.name}[/bold blue] "
                         f"(Similarity -> {item.similarity:.3f})")

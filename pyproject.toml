@@ -14,6 +14,7 @@ dependencies = [
     "torchcodec==0.1",
     "torchvision==0.20.1",
     "xformers>=0.0.29.post1",
+    "PyPDF2>=3.0.1",
 ]
 
 [dependency-groups]

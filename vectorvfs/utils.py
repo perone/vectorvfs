@@ -2,7 +2,8 @@ import time
 from PIL import Image
 from contextlib import ContextDecorator
 from pathlib import Path
-
+from typing import Callable, Dict, Set
+import torch
 
 class PerfCounter(ContextDecorator):
     """
@@ -56,3 +57,42 @@ def extract_pdf_text(pdf_path: Path) -> str:
     for page in reader.pages:
         text += page.extract_text()
     return text
+
+
+def supported_files() -> Set[str]:
+    """
+    Returns a set of all supported file extensions.
+    """
+    return pillow_image_extensions() | {'.pdf'}
+
+
+def extract_image_features(image_path: Path, encoder) -> torch.Tensor:
+    """
+    Extract features from an image file.
+    """
+    features = encoder.encode_vision(image_path)
+    return features
+
+
+def extract_pdf_features(pdf_path: Path, encoder) -> torch.Tensor:
+    """
+    Extract features from a PDF file by encoding its text content.
+    """
+    text = extract_pdf_text(pdf_path)
+    features = encoder.encode_text(text)
+    return features
+
+
+def get_feature_extractor(extension: str) -> Callable[[Path, object], torch.Tensor]:
+    """
+    Returns the appropriate feature extraction function for a given file extension.
+    """
+    extractors: Dict[str, Callable[[Path, object], torch.Tensor]] = {
+        '.pdf': extract_pdf_features,
+    }
+    
+    # Add all image extensions to use the image extractor
+    for ext in pillow_image_extensions():
+        extractors[ext] = extract_image_features
+        
+    return extractors.get(extension.lower())

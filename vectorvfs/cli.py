@@ -8,7 +8,9 @@ import torch.nn.functional as F
 from rich.console import Console
 from PIL import Image
 
-from vectorvfs.utils import PerfCounter, pillow_image_extensions, extract_pdf_text
+from vectorvfs.utils import (
+    PerfCounter, supported_files, get_feature_extractor
+)
 from vectorvfs.vfsstore import VFSStore, XAttrFile
 
 console = Console()
@@ -66,27 +68,26 @@ def search(n: int, query: str, path: str, force_reindex: bool,
         else:
             iter_dir = Path(path).iterdir()
 
-        supported_images = pillow_image_extensions()
-        supported_files = supported_images | {'.pdf'}
         for pathfile in iter_dir:
             if not pathfile.is_file():
                 continue
 
-            if pathfile.suffix not in supported_files:
+            if pathfile.suffix not in supported_files():
                 continue
 
             console.log(f"Processing [bold blue]{pathfile}[/bold blue]")
             xattrfile = XAttrFile(pathfile)
             vfs_store = VFSStore(xattrfile)
             keys = xattrfile.list()
+            
             if "user.vectorvfs" not in keys or force_reindex:
                 console.log(f"[bold blue]{pathfile}[/bold blue] not indexed, indexing...")
                 try:
-                    if pathfile.suffix == '.pdf':
-                        text = extract_pdf_text(pathfile)
-                        features = pe_encoder.encode_text(text)
-                    else:
-                        features = pe_encoder.encode_vision(pathfile)
+                    extract_func = get_feature_extractor(pathfile.suffix)
+                    if extract_func is None:
+                        console.log(f"No extractor found for [bold blue]{pathfile}[/bold blue], skipping...")
+                        continue
+                    features = extract_func(pathfile, pe_encoder)
                 except Exception as e:
                     console.log(f"Failed to index [bold blue]{pathfile}[/bold blue]: {e}, skipping...")
                     continue
